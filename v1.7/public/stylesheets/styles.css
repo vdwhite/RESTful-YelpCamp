@@ -1,0 +1,16 @@
+#form{
+    width: 30%;
+    margin: 0 auto;
+}
+
+#displayTitle{
+    display: inline;
+}
+
+.thumbnail img{
+    width: 100%;
+}
+
+.thumbnail .caption-full{
+    padding: 10px;
+}
