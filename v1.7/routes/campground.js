@@ -6,7 +6,7 @@ var Campground = require("../models/ground");
                         //name want to give: data passing in
 //    res.render("grounds",{campgrounds:campgrounds}); 
 
-router.post("/", function(req,res){
+router.post("/", isLoggedIn, function(req,res){
     //get data from form db
     var name = req.body.name; // name="name" from post form
     var imgURL = req.body.image; // name= "image" from post form 
@@ -14,10 +14,16 @@ router.post("/", function(req,res){
     var des= req.body.description; //name = "desciption"
     
     
+    var author ={
+        username: req.user.username,
+        id: req.user._id
+    }
+    
     var newCamp = {
         name:name,
         image:imgURL,
-        description:des
+        description:des,
+        author: author
     };
 //  create bew campground object and store into database
 
@@ -33,7 +39,7 @@ router.post("/", function(req,res){
     });
 });
 
-router.get("/new",function(req,res){
+router.get("/new",isLoggedIn,function(req,res){
    res.render("grounds/new"); 
 });
 
@@ -53,3 +59,12 @@ router.get("/:id",function(req,res){
 
 
 module.exports = router;
+
+//middle ware
+function isLoggedIn(req,res,next){
+    if(req.isAuthenticated()){
+        return next();
+    } else{
+        res.redirect("/login");
+    }
+}
