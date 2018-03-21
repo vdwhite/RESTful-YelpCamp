@@ -1,0 +1,60 @@
+<%include ../partials/header%>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <p class="lead">Camp</p>
+            <div class="list-group">
+                <li class="list-group-item active">info1</li>
+                <li class="list-group-item">info2</li>
+                <li class="list-group-item">info3</li>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="thumbnail">
+                <img class="img-responsive campimg" src="<%=campground.image%>"/>
+            <div class="caption-full">
+                <h4 class="pull-right">$5.00/night</h4>
+                <h4><a><%=campground.name%></a></h4>
+                <p><%=campground.description%></p>
+                
+                <p>Submitted by <%=campground.author.username%></p>
+
+                <%//if there is login and the user owns the campground the buttons will show up%>
+                <% if( (currentUser) && (campground.author.id.equals(currentUser.id))){ %>
+                    <a class="btn btn-warning" href="/grounds/<%=campground._id%>/edit">EDIT</a>
+                    <form class="delete-form" action="/grounds/<%=campground._id%>?_method=DELETE" method="POST">
+                        <button class="btn btn-danger">DELETE</button>
+                    </form>
+                <% } %>
+
+            </div>
+            </div>
+            <div class="well">
+                <h2 id="displayTitle">Comments</h2>
+                <a href="/grounds/<%=campground._id%>/comments/new" class="btn btn-success pull-right">Make a new comment</a>
+                <hr/>
+                <%campground.comments.forEach(function(comment){%>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4><%=comment.author.username%></h4>
+                            <span><%=comment.text%></span>
+                            <span class="pull-right">5 days ago</span>
+                            
+                            <%//if there is login and the user owns the campground the buttons will show up%>
+                            <% if( (currentUser) && (comment.author.id.equals(currentUser.id))){ %>
+                            <a class="btn btn-warning" href="/grounds/<%=campground._id%>/comments/<%=comment._id%>/edit">Button</a>
+                            
+                            <form class="delete-form" action="/grounds/<%=campground._id%>/comments/<%=comment._id%>?_method=DELETE" method="POST">
+                                <button class="btn btn-danger">DELETE</button>
+                            </form>
+                            <% } %>
+                        </div>
+
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+<%include ../partials/footer%>
