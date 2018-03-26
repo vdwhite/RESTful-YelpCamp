@@ -14,7 +14,7 @@ router.post("/", middlewareObj.checkIsLoggedIn, function(req,res){
     var imgURL = req.body.image; // name= "image" from post form 
     console.log(req.body);
     var des= req.body.description; //name = "desciption"
-    
+    var price = req.body.price;
     
     var author ={
         username: req.user.username,
@@ -25,17 +25,17 @@ router.post("/", middlewareObj.checkIsLoggedIn, function(req,res){
         name:name,
         image:imgURL,
         description:des,
-        author: author
+        author: author,
+        price: price
     };
 //  create bew campground object and store into database
-
     Campground.create(newCamp,function(err,campground){
         if(err){
+            req.flash("Cannot create campground");
             console.log(err);
         }else{
-            console.log("created: ");
-            console.log(campground);
             //redirect to /gounds
+            req.flash("success","Created campground successfully");
             res.redirect("/grounds");
         }
     });
@@ -77,9 +77,10 @@ router.put("/:id",middlewareObj.checkGroundOwnership,function(req,res){
    //find and update
    Campground.findByIdAndUpdate(req.params.id, req.body.ground, function(err,foundCamp){
        if(err){
+           req.flash("error","Cannot find and update the campground");
            res.redirect("/grounds");
        }else{
-           console.log(req.body);
+           req.flash("success","Update campground successfully");
            res.redirect("/grounds/"+req.params.id);
        }
    });
@@ -90,8 +91,10 @@ router.delete("/:id",middlewareObj.checkGroundOwnership,function(req,res){
    //find and update
    Campground.findByIdAndRemove(req.params.id,function(err){
        if(err){
+           req.flash("error","Cannot find and remove the campground");
            res.redirect("/grounds/"+req.params.id);
        }else{
+           req.flash("success","Removed campground successfully");
            res.redirect("/grounds");
        }
    });

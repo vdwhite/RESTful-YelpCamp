@@ -13,6 +13,7 @@ var campGroundsSchema = new mongoose.Schema({
       },
       username: String
    },
+   price:String,
    //comments should be in an array with comment ids
    comments:[
        {

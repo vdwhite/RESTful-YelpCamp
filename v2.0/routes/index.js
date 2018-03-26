@@ -34,11 +34,12 @@ router.get("/reg",function(req,res){
 router.post("/reg",function(req,res){
    User.register(new User({username: req.body.username}),req.body.password,function(err,newUser){
        if(err){
-           console.log(err);
-           return res.render("register");
+           return res.render("register",{error: err.message});
        } else{
            passport.authenticate("local")(req,res,function(){
-              res.redirect("/grounds"); 
+               // get the username from the database
+               req.flash("success","Welcome, "+newUser.username);
+               res.redirect("/grounds"); 
            });
        }
    });
@@ -52,14 +53,19 @@ router.get("/login",function(req,res){
 
 //handling login logic /middle ware
 router.post("/login", passport.authenticate("local",{
-    successRedirect: "/grounds",
-    failureRedirect: "/login"
-}),function(req,res){});
+    failureRedirect: "/login",
+    failureFlash: "Invalid user name or password combination",
+}),function(req,res){
+    
+    req.flash("success", "Welcome back, "+req.body.username);
+    res.redirect("/grounds");
+});
 
 
 //logout route
 router.get("/logout",function(req,res){
     req.logout();
+    req.flash("success","You logged out!");
     res.redirect("/grounds");
 });
 
